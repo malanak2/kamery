@@ -21,5 +21,8 @@ echo Setting NTP
 curl --user %user%:%pass% --digest --globoff "http://%ip%/cgi-bin/configManager.cgi?action=setConfig&NTP.Enable=true&NTP.Address=%NTPAddress%"
 
 echo Setting MotionDetect
-curl --user %user%:%pass% --digest --globoff "http://%ip%/cgi-bin/configManager.cgi?action=setConfig&MotionDetect[0].Enable=true&MotionDetect[0].Sensitivity=5"
+curl --user %user%:%pass% --digest --globoff "http://%ip%/cgi-bin/configManager.cgi?action=setConfig&MotionDetect[0].Enable=true&MotionDetect[0].Level=5"
+
+set modName = ${ip//[.]/_}
+echo Setting name to %modName%
 
