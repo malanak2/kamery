@@ -23,16 +23,8 @@ curl --user %user%:%pass% --digest --globoff "http://%ip%/cgi-bin/configManager.
 echo Setting MotionDetect
 curl --user %user%:%pass% --digest --globoff "http://%ip%/cgi-bin/configManager.cgi?action=setConfig&MotionDetect[0].Enable=true&MotionDetect[0].Level=5"
 
-set "modName="
-:deaster
-FOR /f "tokens=1* delims=*" %%i IN ("%ip%") DO (
-   SET ip=%%j
-   IF DEFINED ip (
-      SET ip=%%i%%j
-      GOTO deaster
-   ) ELSE (
-      SET ip=%%i
-   )
-)
-echo Setting name to %ip%
+for /f %%i in ('powershell -Command "$env:ip -replace '\.', '-'"') do set "name=%%i"
+
+echo Setting router name to %name%
+curl --user %user%:%pass% --digest --globoff "http://%ip%/cgi-bin/configManager.cgi?action=setConfig&General.MachineName=%name%"
 
