@@ -33,6 +33,7 @@ if not "%ip%"=="" (
     )
     set "new_ip=!new_var!!char!"
     set "ip=%var:~1%"
+    echo %ip%
     goto loop
 )
 echo Setting name to %modName%
