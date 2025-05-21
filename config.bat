@@ -23,6 +23,17 @@ curl --user %user%:%pass% --digest --globoff "http://%ip%/cgi-bin/configManager.
 echo Setting MotionDetect
 curl --user %user%:%pass% --digest --globoff "http://%ip%/cgi-bin/configManager.cgi?action=setConfig&MotionDetect[0].Enable=true&MotionDetect[0].Level=5"
 
-set modName = ${ip//[\.]/\_}
+set "modName="
+
+:loop
+if not "%ip%"=="" (
+    set "char=%ip:~0,1%"
+    if "%char%"=="." (
+        set "char=-"
+    )
+    set "new_ip=!new_var!!char!"
+    set "ip=%var:~1%"
+    goto loop
+)
 echo Setting name to %modName%
 
