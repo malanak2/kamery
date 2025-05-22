@@ -1,12 +1,33 @@
 @echo OFF
 echo Setting variables
-set ip=%1
+set ip=%4
 set user=admin
-set tempPass=Admin1234
-set pass=%2
+set tempPass=%1
+set tempPass2=%2
+set pass=%3
 set NTPAddress=192.168.90.1
 echo Setting new password
-curl --user %user%:%tempPass% --digest --globoff "http://%ip%/cgi-bin/userManager.cgi?action=modifyPassword&name=admin&pwd=%pass%&pwdOld=%tempPass%"
+DEL r.txt
+curl --user %user%:%tempPass% --digest --globoff "http://%ip%/cgi-bin/userManager.cgi?action=modifyPassword&name=admin&pwd=%pass%&pwdOld=%tempPass%" > r.txt
+type r.txt
+findstr /C:"Error" r.txt
+set res=%errorlevel%
+if "%res%"=="0" (
+  echo Password invalid, trying other pass...
+  DEL r2.txt
+  curl --user %user%:%tempPass2% --digest --globoff "http://%ip%/cgi-bin/userManager.cgi?action=modifyPassword&name=admin&pwd=%pass%&pwdOld=%tempPass2%" > r2.txt
+  type r2.txt
+  findstr /C:"Error" r2.txt
+  set res=%errorlevel%
+  if "%res%"=="0" (
+    echo }(%errorlevel%)
+    echo Both passwords incorrect, exiting... %errorlevel%
+  ) else (
+    echo Success
+  )
+) else (
+  echo Success
+)
 
 echo Setting video config
 curl --user %user%:%pass% --digest --globoff "http://%ip%/cgi-bin/configManager.cgi?action=setConfig&Encode[0].MainFormat[0].Video.BitRateControl=VBR&Encode[0].MainFormat[0].Video.FPS=5&Encode[0].ExtraFormat[0].VideoEnable=true&Encode[0].ExtraFormat[0].Video.FPS=5&Encode[0].ExtraFormat[0].Video.BitRateControl=VBR"
